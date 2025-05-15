@@ -75,3 +75,38 @@ void Relu::forward(float *input, float *output) {
         output[i] = (input[i] > 0) ? input[i] : 0;
     }
 }
+
+
+
+/**
+ * @brief Constructs a Convolutional2DLayer with given dimensions and parameters.
+ * 
+ * @param input_row_size Number of rows in the input.
+ * @param input_col_size Number of columns in the input.
+ * @param output_row_size Number of rows in the output.
+ * @param output_col_size Number of columns in the output.
+ * @param kernels Pointer to the flattened kernel weights array.
+ * @param bias Pointer to the bias array.
+ */
+Convolutional2DLayer::Convolutional2DLayer(uint32_t input_row_size, uint32_t input_col_size,
+    uint32_t output_row_size, uint32_t output_col_size,
+    float *kernels, float *bias) {
+this->input_row_size = input_row_size;
+this->input_col_size = input_col_size;
+this->output_row_size = output_row_size;
+this->output_col_size = output_col_size;
+this->kernels = kernels;
+this->bias = bias;
+}
+
+/**
+* @brief Performs the forward pass of a 2D convolution layer.
+* 
+* Note: This is a placeholder function. Actual implementation is required.
+* 
+* @param input Pointer to the input data array.
+* @param output Pointer to the output data array.
+*/
+void Convolutional2DLayer::forward(float *input, float *output) {
+// TODO: Implement convolution operation
+}

@@ -83,3 +83,44 @@ public:
 };
 
 #endif // LAYERS_H
+
+
+
+
+/**
+ * @brief 2D Convolutional layer implementation.
+ * 
+ * Applies a set of convolutional kernels to 2D input data to produce 2D output feature maps.
+ */
+class Convolutional2DLayer : public Layer {
+    private:
+        uint32_t input_row_size;     ///< Number of rows in the input matrix
+        uint32_t input_col_size;     ///< Number of columns in the input matrix
+        uint32_t output_row_size;    ///< Number of rows in the output matrix
+        uint32_t output_col_size;    ///< Number of columns in the output matrix
+        float *kernels;              ///< Pointer to the filter/kernel weights
+        float *bias;                 ///< Pointer to the bias values
+
+    public:
+        /**
+         * @brief Constructor for the Convolutional2DLayer.
+         * 
+         * @param input_row_size_ Number of rows in the input.
+         * @param input_col_size_ Number of columns in the input.
+         * @param output_row_size_ Number of rows in the output.
+         * @param output_col_size_ Number of columns in the output.
+         * @param kernels_ Pointer to the kernel/filter weights.
+         * @param bias_ Pointer to the bias values.
+         */
+        Convolutional2DLayer(uint32_t input_row_size_, uint32_t input_col_size_, 
+                                uint32_t output_row_size_, uint32_t output_col_size_, 
+                                float *kernels_, float *bias_);
+
+        /**
+         * @brief Performs the forward pass for the 2D convolutional layer.
+         * 
+         * @param input Pointer to input data.
+         * @param output Pointer to output data.
+         */
+        void forward(float *input, float *output);
+};    
