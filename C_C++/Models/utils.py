@@ -29,7 +29,7 @@ def int32_to_bytes(val):
 # ------------------------------------------------------------------------------
 def get_max_workspace_arena(model):
     # To be implemented: dynamic calculation based on model
-    return 1024
+    return 32
 
 # ------------------------------------------------------------------------------
 # @brief Converts a Keras Sequential model into a byte array formatted

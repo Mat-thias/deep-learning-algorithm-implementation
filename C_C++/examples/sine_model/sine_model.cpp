@@ -11,7 +11,7 @@
 #define LAYER_LEN 5
 
 // Define the maximum workspace size for intermediate computation
-#define MAX_WORKSPACE_SIZE 1024 * 2
+#define MAX_WORKSPACE_SIZE 32 * 2
 
 // Declare a static array of layer pointers to represent the model graph
 Layer *graph[LAYER_LEN];
