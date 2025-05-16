@@ -77,6 +77,10 @@ Sequential::Sequential(uint8_t *model_arr, uint32_t model_len, Layer **graph, ui
 
         i++;
     }
+    printf("%d", i);
+    input = this->workspace;
+    if (i%2 == DLAI_EVEN) {output = this->workspace;}
+    else {output = workspace + (this->workspace_size / 2);}
 }
 
 /**
@@ -88,7 +92,7 @@ Sequential::Sequential(uint8_t *model_arr, uint32_t model_len, Layer **graph, ui
  * @param input Pointer to the input data array.
  * @param output Pointer to the output data array to be filled.
  */
-void Sequential::predict(float *input, float *output) {
+void Sequential::predict(void) {
     for (int i = 0; i < this->layer_len; i++) {
         int input_workspace_offset;
         int output_workspace_offset;
@@ -96,26 +100,26 @@ void Sequential::predict(float *input, float *output) {
         // Alternate between two halves of the workspace buffer
         switch (i % 2) {
             case DLAI_EVEN:
-                output_workspace_offset = 0;
-                input_workspace_offset = this->workspace_size / 2;
-                break;
-            case DLAI_ODD:
-                output_workspace_offset = this->workspace_size / 2;
                 input_workspace_offset = 0;
+                output_workspace_offset = this->workspace_size / 2;
+                break;
+            default:
+                input_workspace_offset = this->workspace_size / 2;
+                output_workspace_offset = 0;
                 break;
         }
 
-        if (i == 0) {
-            // First layer takes input from the original input array
-            this->graph[0]->forward(input, this->workspace + output_workspace_offset);
-        }
-        else if (i == layer_len - 1) {
-            // Final layer writes output directly to the output array
-            this->graph[i]->forward(this->workspace + input_workspace_offset, output);
-        }
-        else {
+        // if (i == 0) {
+        //     // First layer takes input from the original input array
+        //     this->graph[0]->forward(input, this->workspace + output_workspace_offset);
+        // }
+        // else if (i == layer_len - 1) {
+        //     // Final layer writes output directly to the output array
+        //     this->graph[i]->forward(this->workspace + input_workspace_offset, output);
+        // }
+        // else {
             // Intermediate layers read from and write to workspace buffer
             this->graph[i]->forward(this->workspace + input_workspace_offset, this->workspace + output_workspace_offset);
-        }
+        // }
     }
 }

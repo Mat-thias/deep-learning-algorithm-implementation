@@ -4,6 +4,8 @@
 #include "../../dlai.h"
 #include "../../Layers/src/layers.h"
 
+#include <stdio.h>
+
 /**
  * @brief A class that represents a sequential model consisting of layers.
  * 
@@ -18,7 +20,12 @@ private:
     uint32_t workspace_size;    ///< Size of the workspace buffer for intermediate outputs.
     float *workspace;           ///< Single buffer used for intermediate computations.
 
+
+
 public:
+
+    float *input;
+    float *output;
     /**
      * @brief Constructor to initialize the model with an external graph and workspace.
      * 
@@ -42,7 +49,7 @@ public:
      * @param input Pointer to the input data array.
      * @param output Pointer to the output data array to be filled.
      */
-    void predict(float *input, float *output);
+    void predict(void);
 };
 
 #endif // MODELS_H

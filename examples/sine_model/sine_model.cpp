@@ -32,12 +32,12 @@ int main() {
     std::cout << "Hello World\n";
 
     // Input to the network: a single float representing an angle in radians
-    float x = 1;
-    float *input = &x;
+    // float x = 1;
+    float *input = model.input;
 
     // Output of the network: the predicted sine value
-    float y = 0;
-    float *output = &y;
+    // float y = 0;
+    float *output = model.output;
     
     // Loop over 360 degrees and predict the sine value using the model
     for (int i = 0; i < 360; i++) {
@@ -45,7 +45,7 @@ int main() {
         *input = (float)i * 2 * 3.141 / 360;
 
         // Predict using the model
-        model.predict(input, output);
+        model.predict();
 
         // Print input angle (in degrees) and the predicted sine value
         std::cout << "input " << i << " output " << *output << "\n"; 

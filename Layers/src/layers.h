@@ -82,10 +82,6 @@ public:
     void forward(float *input, float *output);
 };
 
-#endif // LAYERS_H
-
-
-
 
 /**
  * @brief 2D Convolutional layer implementation.
@@ -94,10 +90,17 @@ public:
  */
 class Convolutional2DLayer : public Layer {
     private:
-        uint32_t input_row_size;     ///< Number of rows in the input matrix
-        uint32_t input_col_size;     ///< Number of columns in the input matrix
-        uint32_t output_row_size;    ///< Number of rows in the output matrix
-        uint32_t output_col_size;    ///< Number of columns in the output matrix
+        uint32_t input_channel_size;     ///< Number of rows in the input matrix
+        uint32_t input_row_size;     ///< Number of columns in the input matrix
+        uint32_t input_col_size;    ///< Number of rows in the output matrix
+        uint32_t output_channel_size;    ///< Number of columns in the output matrix
+        uint32_t output_row_size;     ///< Number of columns in the input matrix
+        uint32_t output_col_size;    ///< Number of rows in the output matrix
+        uint32_t kernel_row_size;    ///< Number of rows in the output matrix
+        uint32_t kernel_col_size;    ///< Number of columns in the output matrix
+        uint32_t stride_row;
+        uint32_t stride_col;
+        uint32_t padding;
         float *kernels;              ///< Pointer to the filter/kernel weights
         float *bias;                 ///< Pointer to the bias values
 
@@ -105,16 +108,19 @@ class Convolutional2DLayer : public Layer {
         /**
          * @brief Constructor for the Convolutional2DLayer.
          * 
-         * @param input_row_size_ Number of rows in the input.
-         * @param input_col_size_ Number of columns in the input.
-         * @param output_row_size_ Number of rows in the output.
-         * @param output_col_size_ Number of columns in the output.
-         * @param kernels_ Pointer to the kernel/filter weights.
-         * @param bias_ Pointer to the bias values.
+         * @param input_channel_size Number of rows in the input.
+         * @param input_row_size Number of rows in the input.
+         * @param inpput_col_size Number of columns in the output.
+         * @param output_channel_size Number of columns in the output.
+         * kernel_row_size
+         * kernel_col_size
+         * @param kernels Pointer to the kernel/filter weights.
+         * @param bias Pointer to the bias values.
          */
-        Convolutional2DLayer(uint32_t input_row_size_, uint32_t input_col_size_, 
-                                uint32_t output_row_size_, uint32_t output_col_size_, 
-                                float *kernels_, float *bias_);
+        Convolutional2DLayer(uint32_t input_channel_size, uint32_t input_row_size, uint32_t input_col_size, 
+                                uint32_t output_channel_size, int32_t kernel_row_size, uint32_t kernel_col_size,
+                                uint32_t stride_row, uint32_t stride_col, uint32_t padding,
+                                float *kernels, float *bias);
 
         /**
          * @brief Performs the forward pass for the 2D convolutional layer.
@@ -124,3 +130,7 @@ class Convolutional2DLayer : public Layer {
          */
         void forward(float *input, float *output);
 };    
+
+
+#endif // LAYERS_H
+
