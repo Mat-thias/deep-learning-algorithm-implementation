@@ -1,6 +1,6 @@
 # DLAI (Deep Learning Algorithm Implementation)
 
-DLAI is a streamlined repository focused on implementing core deep learning algorithms from scratch in C/C++. It is designed primarily for educational purposes and optimized for deployment on embedded systems and microcontrollers, supporting TinyML applications.
+DLAI is a streamlined repository focused on implementing core deep learning algorithms from scratch in C/C++. It is designed primarily for educational purposes and optimized for deployment on embedded systems and microcontrollers, supporting TinyML/EmbeddedAI applications. This repository serves as a foundational reference for understanding core deep learning principles and exploring TinyML applications.
 
 ---
 
