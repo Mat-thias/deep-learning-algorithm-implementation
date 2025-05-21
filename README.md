@@ -1,72 +1,105 @@
-# Deep Learning Algorithm Implementation
+# DLAI (Deep Learning Algorithm Implementation)
 
-This repository offers a curated collection of deep learning algorithms implemented from scratch in Python and C++. It is designed for educational purposes and optimization, with a particular emphasis on deployment to embedded systems and microcontrollers. The project serves as a foundational reference for understanding core deep learning principles and exploring TinyML applications.
+DLAI is a streamlined repository focused on implementing core deep learning algorithms from scratch in C/C++. It is designed primarily for educational purposes and optimized for deployment on embedded systems and microcontrollers, supporting TinyML applications.
 
-## Features
+---
 
-* **Algorithm Implementations**: Provides fundamental deep learning algorithms implemented in both Python and C++.
+## 🧠 Current State
 
-* **Embedded Systems Focus**: Emphasizes deployment strategies for embedded systems and microcontrollers, facilitating TinyML applications.
+- The project currently supports **conversion of sequential neural networks from the PyTorch library only**.
+- It uses `torch.save()` to save the full model, and loads it using:
+```python
+  torch.load(pth_file_path, weight_only=False)
+```
+### ✅ Layers Currently Supported
 
-* **Educational Resource**: Serves as a learning tool for those interested in the inner workings of deep learning models and their practical applications.
+0. Linear (Fully Connected) Layer  
+1. ReLU Layer  
 
-## Getting Started
+> Additional layers and features are actively under development.
 
-To explore and utilize the implementations:
+---
 
-1. **Clone the Repository**:
+## 🚀 Features
 
-   ```bash
-   git clone https://github.com/Mat-thias/deep-learning-algorithm-implementation.git
-   ```
+- **Algorithm Implementations**: Basic neural network layers implemented from scratch.
+- **Embedded Systems Focus**: Optimized for TinyML and embedded system deployment.
+- **Educational Resource**: A practical reference for learning deep learning fundamentals and embedded deployment.
 
+---
 
+## 🛠️ Getting Started
 
-2. **Navigate to the Project Directory**:
+### 1. Clone the Repository
+```
+git clone https://github.com/Mat-thias/dlai.git
+```
+### 2. Navigate to the Project Directory
+```
+cd dlai
+```
+### 3. Convert a PyTorch Sequential Model to a C Header File
 
-   ```bash
-   cd deep-learning-algorithm-implementation
-   ```
+Run the script located in `dlai/Models`:
+```
+python3 dlai/Models/convert_sequential_model_to_c.py <model_file> <model_name> <input_shape> [output_dir]
+```
+> Note: It is reocommended to create a virtual environment and install the packages in `dlai/Models/venv_requirement.txt`
+#### Example
+```
+python3 dlai/Models/convert_sequential_model_to_c.py dlai/examples/sine_model/sine_model.pth sine_model "(1,1)" dlai/examples/sine_model/
+```
+---
 
+## ⚙️ Example Usage
 
+```cpp
+Layer *graph[LAYER_LEN];
+float workspace[MAX_WORKSPACE_SIZE];
 
-3. **Explore the Implementations**:
+Sequential model(sine_model, sine_model_len, graph, LAYER_LEN, workspace, MAX_WORKSPACE_SIZE);
 
-   * The repository contains directories for Python and C++ implementations.([GitHub][1])
+float *input = model.input;
+float *output = model.output;
 
-   * Each directory includes source code and documentation for the respective algorithms.
+*input = (float)i * 2 * 3.141 / 360;
+model.predict();
+Serial.println(*output);
+```
+---
 
-## Contributing
+## 📂 Explore the Implementations
 
-Contributions are welcome to enhance the repository's content and utility. To contribute:
+* Contains **C/C++ source code** for supported layers.
+* Each implemented component includes inline documentation.
 
-1. **Fork the Repository**: Click on the 'Fork' button at the top right of the repository page.
+---
+
+## 🤝 Contributing
+
+We welcome contributions to expand supported layers and improve the tool!
+
+1. **Fork the Repository** on GitHub.
 
 2. **Clone Your Fork**:
 
    ```bash
-   git clone https://github.com/your-username/deep-learning-algorithm-implementation.git
+   git clone https://github.com/your-username/dlai.git
    ```
 
-
-
-3. **Create a New Branch**:
+3. **Create a Feature Branch**:
 
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
-
-
-4. **Make Your Changes**: Implement your feature or fix.
+4. **Make Your Changes**.
 
 5. **Commit Your Changes**:
 
    ```bash
-   git commit -m "Add your commit message here"
+   git commit -m "Add your commit message"
    ```
-
-
 
 6. **Push to Your Fork**:
 
@@ -74,16 +107,5 @@ Contributions are welcome to enhance the repository's content and utility. To co
    git push origin feature/your-feature-name
    ```
 
+7. **Open a Pull Request** to the main repository.
 
-
-7. **Create a Pull Request**: Navigate to the original repository and click on 'New Pull Request' to submit your changes for review.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-For more information and to access the repository, visit: [https://github.com/Mat-thias/deep-learning-algorithm-implementation/](https://github.com/Mat-thias/deep-learning-algorithm-implementation/)
-
-[1]: https://github.com/matthias-mayr/SkiREIL?utm_source=chatgpt.com "GitHub - matthias-mayr/SkiREIL"
