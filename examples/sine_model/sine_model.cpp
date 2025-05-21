@@ -1,5 +1,6 @@
 #include <iostream>
 
+
 // Include the pre-trained sine model weights and configuration
 #include "sine_model.h"
 
@@ -32,15 +33,13 @@ int main() {
     std::cout << "Hello World\n";
 
     // Input to the network: a single float representing an angle in radians
-    // float x = 1;
     float *input = model.input;
 
     // Output of the network: the predicted sine value
-    // float y = 0;
     float *output = model.output;
     
     // Loop over 360 degrees and predict the sine value using the model
-    for (int i = 0; i < 360; i++) {
+    for (int i = 0; i < 360; i+=10) {
         // Convert degrees to radians
         *input = (float)i * 2 * 3.141 / 360;
 

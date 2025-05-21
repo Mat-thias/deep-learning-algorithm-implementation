@@ -13,5 +13,6 @@
 
 
 #include <stdint.h>
+#include <float.h>
 
 #endif // DLAI_H

@@ -3,134 +3,188 @@
 
 #include "../../dlai.h"
 
-// Layer type identifiers
+// Layer type identifiers for differentiating layer classes
 #define FULLY_CONNECTED_LAYER       0x00
 #define RELU_LAYER                  0x01
 
 /**
  * @brief Abstract base class for all neural network layers.
+ * 
+ * Provides a virtual interface for the forward method to be implemented
+ * by all derived layer types.
  */
 class Layer {
 public:
     /**
-     * @brief Performs the forward pass of the layer.
+     * @brief Virtual function for the forward pass of a layer.
      * 
-     * @param input Pointer to input data.
-     * @param output Pointer to output data.
+     * This should be overridden by derived layer classes.
+     * 
+     * @param input Pointer to the input data array.
+     * @param output Pointer to the output data array.
      */
     virtual void forward(float *input, float *output);
 };
 
 /**
- * @brief Fully connected (dense) layer implementation.
+ * @brief Fully connected (dense) layer.
  * 
- * This layer performs a matrix-vector multiplication between the input
- * and the weight matrix, followed by bias addition.
+ * Computes output = input × weights^T + bias.
  */
-class FullyConnected : public Layer {
+class Linear : public Layer {
 private:
-    uint32_t input_size;     ///< Number of input nodes (features)
-    uint32_t output_size;    ///< Number of output nodes
-    float *weights;          ///< Pointer to weight matrix (size: output_size × input_size)
-    float *bias;             ///< Pointer to bias vector (size: output_size)
+    uint32_t input_size;      ///< Number of input features
+    uint32_t output_size;     ///< Number of output neurons
+    float *weights;           ///< Weight matrix (output_size × input_size)
+    float *bias;              ///< Bias vector (size: output_size)
 
 public:
     /**
-     * @brief Constructor for the FullyConnected layer.
+     * @brief Constructor for Linear (fully connected) layer.
      * 
-     * @param input_size_ Number of input nodes.
-     * @param output_size_ Number of output nodes.
-     * @param weights_ Pointer to the weight matrix.
-     * @param bias_ Pointer to the bias vector.
+     * @param output_size Number of output neurons.
+     * @param input_size Number of input features.
+     * @param weights Pointer to weight matrix.
+     * @param bias Pointer to bias vector.
      */
-    FullyConnected(uint32_t input_size, uint32_t output_size, float *weights, float *bias);
+    Linear(uint32_t output_size, uint32_t input_size, float *weights, float *bias);
 
     /**
-     * @brief Performs the forward pass for the fully connected layer.
+     * @brief Forward pass: computes the dense layer output.
      * 
-     * @param input Pointer to input data.
-     * @param output Pointer to output data.
-     */
-    void forward(float *input, float *output);
-}; 
-
-/**
- * @brief ReLU (Rectified Linear Unit) activation layer implementation.
- * 
- * Applies the element-wise activation function: max(0, x)
- */
-class Relu : public Layer {
-private:
-    uint32_t input_dim;         ///< Number of input dimensions (e.g., 1 for 1D, 2 for 2D)
-    uint32_t *input_shape;      ///< Pointer to shape array of the input tensor
-
-public:
-    /**
-     * @brief Constructor for the ReLU layer.
-     * 
-     * @param input_dim Number of dimensions of the input.
-     * @param input_shape Pointer to an array representing the shape of the input.
-     */
-    Relu(uint32_t input_dim, uint32_t *input_shape);
-
-    /**
-     * @brief Performs the forward pass for the ReLU activation.
-     * 
-     * @param input Pointer to input data.
-     * @param output Pointer to output data.
+     * @param input Pointer to input array.
+     * @param output Pointer to output array.
      */
     void forward(float *input, float *output);
 };
 
+/**
+ * @brief ReLU (Rectified Linear Unit) activation layer.
+ * 
+ * Applies an element-wise max(0, x) operation.
+ */
+class ReLU : public Layer {
+private:
+    uint32_t input_dim;         ///< Number of dimensions of the input tensor
+    uint32_t *input_shape;      ///< Array indicating shape of input tensor
+
+public:
+    /**
+     * @brief Constructor for ReLU layer.
+     * 
+     * @param input_dim Dimensionality of the input.
+     * @param input_shape Pointer to shape array.
+     */
+    ReLU(uint32_t input_dim, uint32_t *input_shape);
+
+    /**
+     * @brief Applies ReLU activation on input.
+     * 
+     * @param input Pointer to input array.
+     * @param output Pointer to output array.
+     */
+    void forward(float *input, float *output);
+};
 
 /**
- * @brief 2D Convolutional layer implementation.
+ * @brief 2D Convolutional layer.
  * 
- * Applies a set of convolutional kernels to 2D input data to produce 2D output feature maps.
+ * Applies a 2D convolution using multiple kernels across the input.
  */
 class Convolutional2DLayer : public Layer {
-    private:
-        uint32_t input_channel_size;     ///< Number of rows in the input matrix
-        uint32_t input_row_size;     ///< Number of columns in the input matrix
-        uint32_t input_col_size;    ///< Number of rows in the output matrix
-        uint32_t output_channel_size;    ///< Number of columns in the output matrix
-        uint32_t output_row_size;     ///< Number of columns in the input matrix
-        uint32_t output_col_size;    ///< Number of rows in the output matrix
-        uint32_t kernel_row_size;    ///< Number of rows in the output matrix
-        uint32_t kernel_col_size;    ///< Number of columns in the output matrix
-        uint32_t stride_row;
-        uint32_t stride_col;
-        uint32_t padding;
-        float *kernels;              ///< Pointer to the filter/kernel weights
-        float *bias;                 ///< Pointer to the bias values
+private:
+    uint32_t input_channel_size;     ///< Number of input channels
+    uint32_t input_row_size;         ///< Height of input feature map
+    uint32_t input_col_size;         ///< Width of input feature map
 
-    public:
-        /**
-         * @brief Constructor for the Convolutional2DLayer.
-         * 
-         * @param input_channel_size Number of rows in the input.
-         * @param input_row_size Number of rows in the input.
-         * @param inpput_col_size Number of columns in the output.
-         * @param output_channel_size Number of columns in the output.
-         * kernel_row_size
-         * kernel_col_size
-         * @param kernels Pointer to the kernel/filter weights.
-         * @param bias Pointer to the bias values.
-         */
-        Convolutional2DLayer(uint32_t input_channel_size, uint32_t input_row_size, uint32_t input_col_size, 
-                                uint32_t output_channel_size, int32_t kernel_row_size, uint32_t kernel_col_size,
-                                uint32_t stride_row, uint32_t stride_col, uint32_t padding,
-                                float *kernels, float *bias);
+    uint32_t output_channel_size;    ///< Number of output channels
+    uint32_t output_row_size;        ///< Height of output feature map
+    uint32_t output_col_size;        ///< Width of output feature map
 
-        /**
-         * @brief Performs the forward pass for the 2D convolutional layer.
-         * 
-         * @param input Pointer to input data.
-         * @param output Pointer to output data.
-         */
-        void forward(float *input, float *output);
-};    
+    uint32_t kernel_row_size;        ///< Height of kernel
+    uint32_t kernel_col_size;        ///< Width of kernel
 
+    uint32_t stride_row;             ///< Stride in vertical direction
+    uint32_t stride_col;             ///< Stride in horizontal direction
+    uint32_t padding;                ///< Padding size around input
+
+    float *kernels;                  ///< Pointer to convolution kernels
+    float *bias;                     ///< Pointer to bias array
+
+public:
+    /**
+     * @brief Constructor for 2D convolutional layer.
+     * 
+     * @param input_channel_size Number of input channels.
+     * @param input_row_size Height of input.
+     * @param input_col_size Width of input.
+     * @param output_channel_size Number of filters/output channels.
+     * @param kernel_row_size Height of kernel.
+     * @param kernel_col_size Width of kernel.
+     * @param stride_row Vertical stride.
+     * @param stride_col Horizontal stride.
+     * @param padding Padding size.
+     * @param kernels Pointer to kernel weights.
+     * @param bias Pointer to bias values.
+     */
+    Convolutional2DLayer(uint32_t input_channel_size, uint32_t input_row_size, uint32_t input_col_size, 
+                         uint32_t output_channel_size, int32_t kernel_row_size, uint32_t kernel_col_size,
+                         uint32_t stride_row, uint32_t stride_col, uint32_t padding,
+                         float *kernels, float *bias);
+
+    /**
+     * @brief Applies the convolutional operation on input.
+     * 
+     * @param input Pointer to input array.
+     * @param output Pointer to output array.
+     */
+    void forward(float *input, float *output);
+};
+
+/**
+ * @brief 2D Max Pooling layer.
+ * 
+ * Reduces spatial dimensions by selecting max values in each window.
+ */
+class MaxPooling2DLayer : public Layer {
+private:
+    uint32_t input_channel_size; ///< Number of input channels
+    uint32_t input_row_size;     ///< Height of input feature map
+    uint32_t input_col_size;     ///< Width of input feature map
+
+    uint32_t output_row_size;    ///< Height of output feature map
+    uint32_t output_col_size;    ///< Width of output feature map
+
+    uint32_t pool_row;           ///< Height of pooling window
+    uint32_t pool_col;           ///< Width of pooling window
+    uint32_t stride_row;         ///< Stride in vertical direction
+    uint32_t stride_col;         ///< Stride in horizontal direction
+    uint32_t padding;            ///< Padding size around input
+
+public:
+    /**
+     * @brief Constructor for 2D max pooling layer.
+     * 
+     * @param input_channel_size Number of input channels.
+     * @param input_row_size Input height.
+     * @param input_col_size Input width.
+     * @param pool_row Pooling window height.
+     * @param pool_col Pooling window width.
+     * @param stride_row Vertical stride.
+     * @param stride_col Horizontal stride.
+     * @param padding Padding size.
+     */
+    MaxPooling2DLayer(uint32_t input_channel_size, uint32_t input_row_size, uint32_t input_col_size,
+                      uint32_t pool_row, uint32_t pool_col,
+                      uint32_t stride_row, uint32_t stride_col, uint32_t padding);
+
+    /**
+     * @brief Applies max pooling to the input data.
+     * 
+     * @param input Pointer to input array.
+     * @param output Pointer to output array.
+     */
+    void forward(float *input, float *output);
+};
 
 #endif // LAYERS_H
-
