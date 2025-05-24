@@ -30,7 +30,6 @@ float workspace[MAX_WORKSPACE_SIZE];
 Sequential model(sine_model, sine_model_len, graph, LAYER_LEN, workspace, MAX_WORKSPACE_SIZE);
 
 int main() {
-    std::cout << "Hello World\n";
 
     // Input to the network: a single float representing an angle in radians
     float *input = model.input;

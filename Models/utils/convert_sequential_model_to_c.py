@@ -52,18 +52,17 @@ def get_max_workspace_arena(seqential_model, input_shpae):
 # ------------------------------------------------------------------------------
 def convert_sequential_model_to_c(seqential_model, model_name, input_shape, dir="."):
     # Start building the C array
-    c_array = f"#ifndef {model_name.upper()}_H\n#define {model_name.upper()}_H\n\nunsigned char {model_name.lower()}[] = {{\n"
+    c_array = f"#ifndef {model_name.upper()}_H\n#define {model_name.upper()}_H\n\n"
+    
+    # Add number of layers as a preprocessor define
+    c_array += "// Number of Layers\n"
+    c_array += f"#define NO_LAYERS     {len(seqential_model)}\n\n"
 
-    model_len = len(seqential_model)
+    # Add worksheet arena size as a preprocessor define
+    c_array += "// Max worksheet arena\n"
+    c_array += f"#define WORKSHEET_ARENA_SIZE     {get_max_workspace_arena(seqential_model, input_shape)}\n\n"
 
-    # Add number of layers
-    c_array += "    // Number of Layers\n"
-    c_array += "    " + ", ".join([f"0x{b:02X}" for b in int32_to_bytes(model_len)]) + ",\n"
-
-    # Add workspace arena size
-    max_workspace_arena = get_max_workspace_arena(seqential_model, input_shape)
-    c_array += "    // Max workspace arena\n"
-    c_array += "    " + ", ".join([f"0x{b:02X}" for b in int32_to_bytes(max_workspace_arena)]) + ",\n"
+    c_array += f"unsigned char {model_name.lower()}[] = {{\n"
 
     # Serialize each layer
     for i, layer in enumerate(seqential_model):
